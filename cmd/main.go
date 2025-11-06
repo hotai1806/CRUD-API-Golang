@@ -8,11 +8,11 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
-	"hotai1806/crud-api/internal/todo" // Adjust import path to your module name
+	"todo-api/internal/todo" // Adjust to your module
+	"todo-api/internal/user"
 )
 
 func main() {
-	// Connect to Postgres (env vars from Docker)
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 		os.Getenv("DB_HOST"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"), os.Getenv("DB_PORT"))
 
@@ -21,18 +21,26 @@ func main() {
 		panic("failed to connect database")
 	}
 	todo.DB = db
+	user.DB = db // Share DB
 
-	// Auto-migrate schema
-	db.AutoMigrate(&todo.Todo{})
+	// Auto-migrate
+	db.AutoMigrate(&todo.Todo{}, &user.User{})
 
 	r := gin.Default()
 
-	// Routes
-	r.GET("/todos", todo.GetTodos)
-	r.GET("/todos/:id", todo.GetTodo)
-	r.POST("/todos", todo.CreateTodo)
-	r.PUT("/todos/:id", todo.UpdateTodo)
-	r.DELETE("/todos/:id", todo.DeleteTodo)
+	// Public route
+	r.POST("/login", user.Login)
+
+	// Protected group
+	protected := r.Group("/todos")
+	protected.Use(todo.AuthMiddleware())
+	{
+		protected.GET("", todo.GetTodos)
+		protected.GET("/:id", todo.GetTodo)
+		protected.POST("", todo.CreateTodo)
+		protected.PUT("/:id", todo.UpdateTodo)
+		protected.DELETE("/:id", todo.DeleteTodo)
+	}
 
 	r.Run(":8080")
 }
