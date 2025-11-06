@@ -14,11 +14,10 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   api:
-    build:
+    build: 
       context: .
-      dockerfile: Dockerfile    # 👈 use the dev Dockerfile
+      dockerfile: Dockerfile.prod    # 👈 use the prod Dockerfile
     restart: always
-
     ports:
       - "8080:8080"
     environment:
@@ -27,12 +26,8 @@ services:
       DB_PASSWORD: password
       DB_NAME: todo_db
       DB_PORT: 5432
-      JWT_SECRET: mysecretkey123  
     depends_on:
       - db
-    volumes:
-      - .:/app                      # 👈 Mount local files for hot reload
-      - /app/tmp                    # 👈 Prevent Air tmp conflict
 
 volumes:
   postgres_data:

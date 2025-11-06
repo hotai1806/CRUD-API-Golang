@@ -1,17 +1,21 @@
-FROM golang:1.25.4-alpine AS builder
+FROM golang:1.25-alpine
 
+# Install git and air
+RUN apk add --no-cache git && go install github.com/air-verse/air@latest
+
+# Set working directory
 WORKDIR /app
 
+# Copy go.mod and go.sum first
 COPY go.mod go.sum ./
 RUN go mod download
 
+# Copy all source files including .air.toml
 COPY . .
-RUN go build -o main ./cmd/main.go
+COPY .air.toml .
 
-FROM alpine:latest
+# Expose app port
+EXPOSE 8080
 
-WORKDIR /app
-
-COPY --from=builder /app/main .
-
-CMD ["./main"]
+# Run Air with config
+CMD ["air", "-c", ".air.toml"]
