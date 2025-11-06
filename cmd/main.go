@@ -8,8 +8,8 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 
-	"todo-api/internal/todo" // Adjust to your module
-	"todo-api/internal/user"
+	"hotai1806/crud-api/internal/todo" // Adjust to your module
+	"hotai1806/crud-api/internal/user"
 )
 
 func main() {
