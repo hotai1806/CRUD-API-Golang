@@ -1,5 +1,3 @@
-Here's a starter README for your `CRUD-API-Golang` project using the Gin framework. You can copy this as `README.md` and adjust as needed:
-
 ***
 
 # CRUD-API-Golang
@@ -80,7 +78,5 @@ PRs and suggestions welcome!
 MIT
 
 ***
-
-Let me know if you want to add project screenshots, environment variables, example requests/responses, or further customization!
 
 [1](https://github.com/hotai1806/CRUD-API-Golang)
